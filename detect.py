@@ -1,27 +1,18 @@
 import cv2
-from sklearn.externals import joblib
-from skimage.feature import hog
 import numpy as np
 import io
 import os
 from google.cloud import vision
 from google.cloud.vision import types
-from PIL import ImageFilter, Image
-import time
 
-
-cap = cv2.VideoCapture("vid.VOB")
+cap = cv2.VideoCapture("a.mp4")
 length = int(cap.get(cv2.CAP_PROP_FRAME_COUNT))
 currentFrame = 0
 while(currentFrame < length): # making frames from video
     ret, frame = cap.read()
     name = str(currentFrame) + '.jpg'
     print ('Creating frame : ' + name)
-    im = frame[0:20,0:290]   # cropping frame
-    im_gray = cv2.cvtColor(im, cv2.COLOR_BGR2GRAY) # converting rgb to gray
-    im_gray = cv2.bitwise_not(im_gray)
-    im_bw = cv2.threshold(im_gray,160,255,cv2.THRESH_TRUNC)[1] # further image preprocessing
-    cv2.imwrite('images/'+name,im_bw)
+    cv2.imwrite('images/'+name,frame)
     # google vision start
     client = vision.ImageAnnotatorClient()
 
@@ -40,7 +31,7 @@ while(currentFrame < length): # making frames from video
     for label in labels:
         print("label : "+label.description) # print all the labels in image
     print('----------end----------\n')
-    currentFrame += 25
+    currentFrame += 60
     cap.set(1,currentFrame)
 
 cap.release()
